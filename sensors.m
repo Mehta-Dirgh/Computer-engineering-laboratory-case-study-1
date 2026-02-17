@@ -1,8 +1,5 @@
 clc; close all; clear all;
 
-% -----------------------------
-% Basic Parameters
-% -----------------------------
 fs = 100;
 dt = 1/fs;
 c = 0.5;
@@ -11,9 +8,6 @@ Vsyringe = 3;
 T = [2 3 4 5 6];     
 n = 5;
 
-% -----------------------------
-% Generate Voltage Data
-% -----------------------------
 for j = 1:n
     t = 0:dt:T(j);
     for i = 1:length(t)
@@ -22,9 +16,6 @@ for j = 1:n
     L(j) = length(t);
 end
 
-% -----------------------------
-% Bisection Initialization
-% -----------------------------
 ml = 0.5; 
 mu = 3;
 err = 0.001;
@@ -36,7 +27,7 @@ while abs(mu-ml) > err
     
     mr = (ml+mu)/2;
     
-    % ---- Calculate integrals ----
+   
     for j = 1:n
         I(j) = 0;
         for i = 1:L(j)
@@ -44,15 +35,15 @@ while abs(mu-ml) > err
         end
     end
     
-    % ---- Standard Deviation ----
+   
     meanI = sum(I)/n;
     f = sqrt(sum((I-meanI).^2)/n);
     
-    % ---- Store error for graph ----
+   
     error_list(iter) = abs(mu-ml);
     b_list(iter) = mr;
     
-    % ---- Bisection update ----
+
     if f > 0
         mu = mr;
     else
@@ -66,17 +57,12 @@ end
 
 b_final = mr;
 
-% -----------------------------
-% Scaling Factor A
-% -----------------------------
+
 A = Vsyringe / I(1);
 
 fprintf('\nFinal b = %.6f\n',b_final);
 fprintf('Scaling A = %.6f\n',A);
 
-% -----------------------------
-% Plot 1: Objective Function
-% -----------------------------
 b_vals = 0.5:0.05:3;
 
 for k = 1:length(b_vals)
@@ -100,20 +86,17 @@ title('Objective Function vs Exponent b');
 legend('f(b)','Intersection (Optimal b)','Location','best');
 grid on;
 
-% -----------------------------
-% Plot 2: Error Convergence
-% -----------------------------
-figure;
+
 plot(1:length(error_list),error_list,'r','LineWidth',2);
 hold on;
 
-% Final iteration point (intersection with tolerance)
+
 final_iter = length(error_list);
 final_error = error_list(end);
 
 plot(final_iter,final_error,'bo','MarkerSize',8,'LineWidth',2);
 
-% Tolerance line
+
 yline(err,'k--','Tolerance');
 
 xlabel('Iteration');
